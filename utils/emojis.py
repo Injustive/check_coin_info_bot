@@ -1,6 +1,7 @@
 from emoji import emojize
 
 EMOJI_DOWN_ARROW = emojize(':down_arrow:')
+EMOJI_RIGHT_ARROW = emojize(':right_arrow:')
 EMOJI_CHART = emojize(':bar_chart:')
 EMOJI_FIRE = emojize(':fire:')
 EMOJI_INCREASE = emojize(':chart_increasing:')

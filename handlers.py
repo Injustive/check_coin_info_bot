@@ -2,6 +2,7 @@ from utils.emojis import *
 from utils.keyboards import *
 from errors import *
 from aiogram import types
+from aiogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 from loader import dp
 from fsm import *
 from manage_db import add_coin_to_db, check_coins, delete_coin_from_db
@@ -66,7 +67,7 @@ async def info_my_coin(call: types.CallbackQuery):
     try:
         coins = await check_coins(call.from_user.id)
     except NoCoinsDataError:
-        await call.message.answer(f"У вас нет монет. Сначала добавьте монеты{EMOJI_CROSS_MARK}",
+        return await call.message.answer(f"У вас нет монет. Сначала добавьте монеты{EMOJI_CROSS_MARK}",
                                   reply_markup=main_keyboard)
 
     await call.message.answer(f'Выберите монету из списка ниже{EMOJI_DOWN_ARROW*3}:',
@@ -86,7 +87,7 @@ async def delete_coin(call: types.CallbackQuery):
     try:
         coins = await check_coins(call.from_user.id)
     except NoCoinsDataError:
-        await call.message.answer(f"У вас нет монет. Сначала добавьте монеты{EMOJI_CROSS_MARK}",
+        return await call.message.answer(f"У вас нет монет. Сначала добавьте монеты{EMOJI_CROSS_MARK}",
                                   reply_markup=main_keyboard)
 
     await call.message.answer(f'Выберите монету из списка ниже, чтобы удалить{EMOJI_DOWN_ARROW * 3}:',
@@ -121,9 +122,44 @@ async def get_coin_info(call: types.CallbackQuery):
     try:
         coins = await check_coins(call.from_user.id)
         response = await coin.coin_stat_message()
-        await call.message.answer(response, reply_markup=create_coins_list_kb(coins, 'check_info'), parse_mode='Markdown')
+        await call.message.answer(response, reply_markup=create_coins_list_kb(coins, 'check_info'),
+                                  parse_mode="Markdown")
     except GetDataFailError:
         await call.message.answer(f'Возникли проблемы с получением данных для этой монеты...{EMOJI_CROSS_MARK}',
                                   reply_markup=main_keyboard)
     except NoCoinsDataError:
         await call.message.answer(f"У вас уже нет этой монеты!{EMOJI_CROSS_MARK}", reply_markup=main_keyboard)
+
+
+@dp.inline_handler()
+async def inline_coin_info(inline_query: InlineQuery):
+    """Инлайн режим для бота"""
+
+    query = inline_query.query
+    results = []
+
+    try:
+        coins = [coin for coin in await check_coins(inline_query.from_user.id) if query.lower() in coin]
+        results = [InlineQueryResultArticle(
+            id=coin,
+            title=coin.upper(),
+            input_message_content=InputTextMessageContent(
+                await Coin(coin.upper()).coin_stat_message(),
+                parse_mode="Markdown")
+        )
+            for coin in coins]
+
+        switch_message = f"Перейти к боту {EMOJI_RIGHT_ARROW}"
+
+        if not coins:
+            switch_message = f"Не найдено. Добавить {EMOJI_RIGHT_ARROW}"
+    except NoCoinsDataError:
+        switch_message = f'У вас нет монет. Добавить {EMOJI_RIGHT_ARROW}'
+
+    await inline_query.answer(
+        results=results,
+        cache_time=1,
+        is_personal=True,
+        switch_pm_text=switch_message,
+        switch_pm_parameter='to_bot'
+    )
