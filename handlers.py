@@ -7,9 +7,6 @@ from loader import dp
 from fsm import *
 from manage_db import add_coin_to_db, check_coins, delete_coin_from_db
 from coin_info import Coin
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 @dp.message_handler(commands=['start', 'help'], state='*')
 async def send_welcome(message: types.Message):

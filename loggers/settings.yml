@@ -2,7 +2,7 @@ version: 1
 disable_existing_loggers: true
 formatters:
   db_formatter:
-    format: "{asctime}: <{levelname}> - Модуль: <{filename}> - Функция: <{funcName}> - <{message}>"
+    format: "{asctime}: <{levelname}> - Module: <{filename}> - Function: <{funcName}> - <{message}>"
     style: "{"
 handlers:
   console:
