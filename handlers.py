@@ -155,7 +155,7 @@ async def inline_coin_info(inline_query: InlineQuery):
 
     await inline_query.answer(
         results=results,
-        cache_time=1,
+        cache_time=120,
         is_personal=True,
         switch_pm_text=switch_message,
         switch_pm_parameter='to_bot'
