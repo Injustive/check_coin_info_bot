@@ -16,7 +16,7 @@ handlers:
 loggers:
   db_logger:
     level: DEBUG
-    handlers: [console]                # или db_handler
+    handlers: [console]
 root:
   level: DEBUG
   handlers: [console,db_handler]
