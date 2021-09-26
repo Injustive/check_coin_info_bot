@@ -11,7 +11,7 @@ handlers:
     formatter: db_formatter
   db_handler:
     class: logging.FileHandler
-    filename: loggers/logg.info
+    filename: loggers/loggs.log
     formatter: db_formatter
 loggers:
   db_logger:
