@@ -5,6 +5,10 @@ formatters:
     format: "{asctime}: <{levelname}> - Модуль: <{filename}> - Функция: <{funcName}> - <{message}>"
     style: "{"
 handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: db_formatter
   db_handler:
     class: logging.FileHandler
     filename: loggers/logg.info
@@ -13,3 +17,6 @@ loggers:
   db_logger:
     level: DEBUG
     handlers: [db_handler]
+root:
+  level: DEBUG
+  handlers: [console,db_handler]

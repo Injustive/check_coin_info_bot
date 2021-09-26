@@ -1,11 +1,11 @@
-import asyncpg
-from errors import *
 import os
-import asyncio
-from loggers.loggers import db_logger
 
-from utils.db_queries import *
+import asyncpg
 from dotenv import load_dotenv
+import socket
+
+from loggers.loggers import db_logger
+from utils.db_queries import *
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
 if os.path.exists(dotenv_path):
@@ -25,18 +25,18 @@ async def connect_db(user) -> asyncpg.Connection:
     try:
         conn = await asyncpg.connect(DSN)
         await conn.execute(CREATE_TABLE_QUERY)
-
         db_logger.info(f'Пользователь {user} подключился к БД')
 
         return conn
-    except ValueError:
-        db_logger.error(f"Пользователю {user} не удалось подключиться к БД")
+    except socket.gaierror as err:              # Ошибки связанные с адресами, для getaddrinfo() и getnameinfo()
+        db_logger.error(f"Пользователю {user} не удалось подключиться к БД. Причина - {err}")
 
 
 async def insert_or_update(user_id: int, coin: str) -> None:
     """Вставка или обновление монет в БД"""
 
     conn = await connect_db(user_id)
+
     await conn.execute(INSERT_OR_UPDATE_QUERY, user_id, (coin,), coin)
     db_logger.info(f"Пользователь {user_id} добавил монету {coin}")
 
