@@ -1,7 +1,7 @@
 import logging.config
 import yaml
 
-with open('loggers/settings.yml', 'r') as stream:
+with open('loggers/settings.yml', 'r', encoding='unicode_escape') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
 
 logging.config.dictConfig(config)
