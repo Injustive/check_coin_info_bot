@@ -30,7 +30,7 @@ class Coin():
         change_7d = c_path['percent_change_7d']
 
         full_info = f"""
-        *{EMOJI_FIRE}Цена монеты {self.coin}: {price:.4f}${EMOJI_FIRE}
+        *{EMOJI_FIRE}Цена монеты {self.coin}: {price}${EMOJI_FIRE}
         {emoji_chart(volume_24h)}Обьем за 24 часа: {int(volume_24h)}${emoji_chart(volume_24h)}
         {emoji_chart(change_1h)}Изменение за 1 час: {change_1h:.4f}%{emoji_chart(change_1h)}
         {emoji_chart(change_24h)}Изменение за 24 часа: {change_24h:.4f}%{emoji_chart(change_24h)}
